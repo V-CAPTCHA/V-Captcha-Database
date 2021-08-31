@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Aug 30, 2021 at 06:55 PM
+-- Generation Time: Aug 31, 2021 at 05:57 PM
 -- Server version: 8.0.26
 -- PHP Version: 7.4.20
 
@@ -63,9 +63,17 @@ CREATE TABLE `captcha_key` (
 CREATE TABLE `dataset` (
   `dataset_id` int NOT NULL COMMENT 'รหัสข้อมูล dataset ที่ใช้ในการยืนยันตัวตน',
   `dataset_img` varchar(50) NOT NULL COMMENT 'รูปที่ประกอบคำถามสำหรับยืนยันตัวตน',
-  `dataset_question` int NOT NULL COMMENT 'คำถามสำหรับยืนยันตัวตน',
-  `dataset_reply` int NOT NULL COMMENT 'คำตอบสำหรับยืนยันตัวตน'
+  `dataset_question` text NOT NULL COMMENT 'คำถามสำหรับยืนยันตัวตน',
+  `dataset_reply` text NOT NULL COMMENT 'คำตอบสำหรับยืนยันตัวตน'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='ข้อมูลสำหรับใช้ยืนยันตัวตน ';
+
+--
+-- Dumping data for table `dataset`
+--
+
+INSERT INTO `dataset` (`dataset_id`, `dataset_img`, `dataset_question`, `dataset_reply`) VALUES
+(1, 'q1', 'หมาในรูปใส่ปลอกคอสีอะไร', 'สีแดง,สีทอง'),
+(2, 'q2', 'หมาตัวนี้สีอะไร', 'ขาว,สีขาว,สีใส');
 
 -- --------------------------------------------------------
 
@@ -76,10 +84,9 @@ CREATE TABLE `dataset` (
 CREATE TABLE `user` (
   `user_id` int NOT NULL COMMENT 'รหัสประจำตัวของผู้ใช้งาน',
   `email` varchar(50) NOT NULL COMMENT 'อีเมลล์ของผู้ใช้งาน',
-  `password` varchar(50) NOT NULL COMMENT 'รหัสผ่านของผู้ใช้งาน',
+  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'รหัสผ่านของผู้ใช้งาน',
   `first_name` varchar(50) NOT NULL COMMENT 'ชื่อของผู้ใช้งาน',
-  `last_name` varchar(50) NOT NULL COMMENT 'นามสกุลของผู้ใช้งาน',
-  `api_key` varchar(10) NOT NULL COMMENT 'หมายเลข API'
+  `last_name` varchar(50) NOT NULL COMMENT 'นามสกุลของผู้ใช้งาน'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='ผู้ใช้';
 
 --
@@ -130,7 +137,7 @@ ALTER TABLE `captcha_key`
 -- AUTO_INCREMENT for table `dataset`
 --
 ALTER TABLE `dataset`
-  MODIFY `dataset_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสข้อมูล dataset ที่ใช้ในการยืนยันตัวตน';
+  MODIFY `dataset_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสข้อมูล dataset ที่ใช้ในการยืนยันตัวตน', AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `user`
