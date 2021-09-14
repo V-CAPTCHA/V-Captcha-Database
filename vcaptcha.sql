@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Sep 14, 2021 at 06:15 AM
+-- Generation Time: Sep 14, 2021 at 01:08 PM
 -- Server version: 8.0.26
 -- PHP Version: 7.4.20
 
@@ -30,14 +30,13 @@ SET time_zone = "+00:00";
 CREATE TABLE `authen_action` (
   `action_id` int NOT NULL COMMENT 'รหัสข้อมูล dataset ที่ใช้ในการยืนยันตัวตน',
   `dataset_id` int NOT NULL COMMENT 'รูปที่ประกอบคำถามสำหรับยืนยันตัวตน',
-  `action_reply` varchar(50) NOT NULL COMMENT 'คำตอบของผู้ใช้ที่ใช้ยืนยันตัวตน',
-  `action_create` datetime NOT NULL COMMENT 'วันและเวลาที่เริ่มการยืนยันตัวตน',
-  `action_end` datetime NOT NULL COMMENT 'วันและเวลาที่สิ้นสุดการยืนยันตัวตน',
-  `action_checked` tinyint(1) NOT NULL COMMENT 'สถานะความถูกต้องของการยืนยันตัวตน',
-  `action_valid` varchar(50) NOT NULL COMMENT 'สถานะการเช็คของการยืนยันตัวตน',
+  `action_reply` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'คำตอบของผู้ใช้ที่ใช้ยืนยันตัวตน',
+  `action_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'วันและเวลาที่เริ่มการยืนยันตัวตน',
+  `action_end` datetime DEFAULT NULL COMMENT 'วันและเวลาที่สิ้นสุดการยืนยันตัวตน',
+  `action_checked` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'สถานะความถูกต้องของการยืนยันตัวตน',
+  `action_valid` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'none_checked' COMMENT 'สถานะการเช็คของการยืนยันตัวตน',
   `action_ip` varchar(50) NOT NULL COMMENT 'หมายเลข IP ของผู้ที่ยืนยันตัวตน',
-  `action_value` varchar(50) NOT NULL COMMENT 'รหัสแคปช่าคีย์',
-  `key_value` varchar(50) NOT NULL
+  `key_value` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'รหัสแคปช่าคีย์'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='การยืนยันตัวตน ';
 
 -- --------------------------------------------------------
@@ -54,6 +53,13 @@ CREATE TABLE `captcha_key` (
   `key_value` varchar(50) NOT NULL COMMENT 'รหัสแคปช่าคีย์',
   `user_id` int NOT NULL COMMENT 'รหัสประจำตัวของผู้ใช้งาน	'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='ข้อมูลแคปช่าคีย์';
+
+--
+-- Dumping data for table `captcha_key`
+--
+
+INSERT INTO `captcha_key` (`key_id`, `key_name`, `creation_date`, `domain`, `key_value`, `user_id`) VALUES
+(1, 'vcaptchatest', '2021-09-08', '127.0.0.1:3000', '1150123vcaptcha', 1);
 
 -- --------------------------------------------------------
 
@@ -91,6 +97,13 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='ผู้ใช้';
 
 --
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`user_id`, `email`, `password`, `first_name`, `last_name`) VALUES
+(1, 'vcaptchatest@gmail.com', '1150123', 'vcaptcah', 'last_vcaptcha');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -99,8 +112,9 @@ CREATE TABLE `user` (
 --
 ALTER TABLE `authen_action`
   ADD PRIMARY KEY (`action_id`),
-  ADD UNIQUE KEY `dataset_id` (`dataset_id`),
-  ADD KEY `key_value` (`key_value`);
+  ADD KEY `key_value` (`key_value`),
+  ADD KEY `dataset_id_2` (`dataset_id`),
+  ADD KEY `dataset_id` (`dataset_id`) USING BTREE;
 
 --
 -- Indexes for table `captcha_key`
@@ -127,10 +141,16 @@ ALTER TABLE `user`
 --
 
 --
+-- AUTO_INCREMENT for table `authen_action`
+--
+ALTER TABLE `authen_action`
+  MODIFY `action_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสข้อมูล dataset ที่ใช้ในการยืนยันตัวตน', AUTO_INCREMENT=34;
+
+--
 -- AUTO_INCREMENT for table `captcha_key`
 --
 ALTER TABLE `captcha_key`
-  MODIFY `key_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสประจำตัวของแคปช่าคีย์';
+  MODIFY `key_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสประจำตัวของแคปช่าคีย์', AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `dataset`
@@ -142,7 +162,7 @@ ALTER TABLE `dataset`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสประจำตัวของผู้ใช้งาน';
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสประจำตัวของผู้ใช้งาน', AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
