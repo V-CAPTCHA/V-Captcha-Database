@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Sep 07, 2021 at 09:48 AM
+-- Generation Time: Sep 14, 2021 at 06:15 AM
 -- Server version: 8.0.26
 -- PHP Version: 7.4.20
 
@@ -36,7 +36,8 @@ CREATE TABLE `authen_action` (
   `action_checked` tinyint(1) NOT NULL COMMENT 'สถานะความถูกต้องของการยืนยันตัวตน',
   `action_valid` varchar(50) NOT NULL COMMENT 'สถานะการเช็คของการยืนยันตัวตน',
   `action_ip` varchar(50) NOT NULL COMMENT 'หมายเลข IP ของผู้ที่ยืนยันตัวตน',
-  `action_value` varchar(50) NOT NULL COMMENT 'รหัสแคปช่าคีย์'
+  `action_value` varchar(50) NOT NULL COMMENT 'รหัสแคปช่าคีย์',
+  `key_value` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='การยืนยันตัวตน ';
 
 -- --------------------------------------------------------
@@ -50,7 +51,8 @@ CREATE TABLE `captcha_key` (
   `key_name` varchar(50) NOT NULL COMMENT 'ชื่อของแคปช่าคีย์',
   `creation_date` date NOT NULL COMMENT 'วันที่สร้างแคปช่าคีย์',
   `domain` varchar(50) NOT NULL COMMENT 'โดเมนที่ใช้งานแคปช่าคีย์',
-  `key_value` varchar(50) NOT NULL COMMENT 'รหัสแคปช่าคีย์'
+  `key_value` varchar(50) NOT NULL COMMENT 'รหัสแคปช่าคีย์',
+  `user_id` int NOT NULL COMMENT 'รหัสประจำตัวของผู้ใช้งาน	'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='ข้อมูลแคปช่าคีย์';
 
 -- --------------------------------------------------------
@@ -85,8 +87,7 @@ CREATE TABLE `user` (
   `email` varchar(50) NOT NULL COMMENT 'อีเมลล์ของผู้ใช้งาน',
   `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'รหัสผ่านของผู้ใช้งาน',
   `first_name` varchar(50) NOT NULL COMMENT 'ชื่อของผู้ใช้งาน',
-  `last_name` varchar(50) NOT NULL COMMENT 'นามสกุลของผู้ใช้งาน',
-  `key_id` int NOT NULL COMMENT 'รหัสประจำตัวของแคปช่าคีย์'
+  `last_name` varchar(50) NOT NULL COMMENT 'นามสกุลของผู้ใช้งาน'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='ผู้ใช้';
 
 --
@@ -98,13 +99,16 @@ CREATE TABLE `user` (
 --
 ALTER TABLE `authen_action`
   ADD PRIMARY KEY (`action_id`),
-  ADD UNIQUE KEY `dataset_id` (`dataset_id`);
+  ADD UNIQUE KEY `dataset_id` (`dataset_id`),
+  ADD KEY `key_value` (`key_value`);
 
 --
 -- Indexes for table `captcha_key`
 --
 ALTER TABLE `captcha_key`
-  ADD PRIMARY KEY (`key_id`);
+  ADD PRIMARY KEY (`key_id`),
+  ADD KEY `key_value` (`key_value`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `dataset`
@@ -116,8 +120,7 @@ ALTER TABLE `dataset`
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
-  ADD PRIMARY KEY (`user_id`),
-  ADD KEY `key_id` (`key_id`);
+  ADD PRIMARY KEY (`user_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -149,13 +152,14 @@ ALTER TABLE `user`
 -- Constraints for table `authen_action`
 --
 ALTER TABLE `authen_action`
-  ADD CONSTRAINT `authen_action_ibfk_1` FOREIGN KEY (`dataset_id`) REFERENCES `dataset` (`dataset_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+  ADD CONSTRAINT `authen_action_ibfk_1` FOREIGN KEY (`dataset_id`) REFERENCES `dataset` (`dataset_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `authen_action_ibfk_2` FOREIGN KEY (`key_value`) REFERENCES `captcha_key` (`key_value`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
--- Constraints for table `user`
+-- Constraints for table `captcha_key`
 --
-ALTER TABLE `user`
-  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`key_id`) REFERENCES `captcha_key` (`key_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `captcha_key`
+  ADD CONSTRAINT `captcha_key_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
