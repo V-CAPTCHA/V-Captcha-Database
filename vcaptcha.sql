@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Sep 14, 2021 at 01:08 PM
+-- Generation Time: Feb 17, 2022 at 06:57 AM
 -- Server version: 8.0.26
 -- PHP Version: 7.4.20
 
@@ -54,13 +54,6 @@ CREATE TABLE `captcha_key` (
   `user_id` int NOT NULL COMMENT 'รหัสประจำตัวของผู้ใช้งาน	'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='ข้อมูลแคปช่าคีย์';
 
---
--- Dumping data for table `captcha_key`
---
-
-INSERT INTO `captcha_key` (`key_id`, `key_name`, `creation_date`, `domain`, `key_value`, `user_id`) VALUES
-(1, 'vcaptchatest', '2021-09-08', '127.0.0.1:3000', '1150123vcaptcha', 1);
-
 -- --------------------------------------------------------
 
 --
@@ -73,14 +66,6 @@ CREATE TABLE `dataset` (
   `dataset_question` text NOT NULL COMMENT 'คำถามสำหรับยืนยันตัวตน',
   `dataset_reply` text NOT NULL COMMENT 'คำตอบสำหรับยืนยันตัวตน'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='ข้อมูลสำหรับใช้ยืนยันตัวตน ';
-
---
--- Dumping data for table `dataset`
---
-
-INSERT INTO `dataset` (`dataset_id`, `dataset_img`, `dataset_question`, `dataset_reply`) VALUES
-(1, 'q1', 'หมาในรูปใส่ปลอกคอสีอะไร', 'สีแดง,สีทอง'),
-(2, 'q2', 'หมาตัวนี้สีอะไร', 'ขาว,สีขาว,สีใส');
 
 -- --------------------------------------------------------
 
@@ -95,13 +80,6 @@ CREATE TABLE `user` (
   `first_name` varchar(50) NOT NULL COMMENT 'ชื่อของผู้ใช้งาน',
   `last_name` varchar(50) NOT NULL COMMENT 'นามสกุลของผู้ใช้งาน'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='ผู้ใช้';
-
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`user_id`, `email`, `password`, `first_name`, `last_name`) VALUES
-(1, 'vcaptchatest@gmail.com', '1150123', 'vcaptcah', 'last_vcaptcha');
 
 --
 -- Indexes for dumped tables
@@ -144,25 +122,25 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `authen_action`
 --
 ALTER TABLE `authen_action`
-  MODIFY `action_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสข้อมูล dataset ที่ใช้ในการยืนยันตัวตน', AUTO_INCREMENT=34;
+  MODIFY `action_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสข้อมูล dataset ที่ใช้ในการยืนยันตัวตน';
 
 --
 -- AUTO_INCREMENT for table `captcha_key`
 --
 ALTER TABLE `captcha_key`
-  MODIFY `key_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสประจำตัวของแคปช่าคีย์', AUTO_INCREMENT=2;
+  MODIFY `key_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสประจำตัวของแคปช่าคีย์';
 
 --
 -- AUTO_INCREMENT for table `dataset`
 --
 ALTER TABLE `dataset`
-  MODIFY `dataset_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสข้อมูล dataset ที่ใช้ในการยืนยันตัวตน', AUTO_INCREMENT=4;
+  MODIFY `dataset_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสข้อมูล dataset ที่ใช้ในการยืนยันตัวตน';
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสประจำตัวของผู้ใช้งาน', AUTO_INCREMENT=2;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสประจำตัวของผู้ใช้งาน';
 
 --
 -- Constraints for dumped tables
@@ -172,8 +150,8 @@ ALTER TABLE `user`
 -- Constraints for table `authen_action`
 --
 ALTER TABLE `authen_action`
-  ADD CONSTRAINT `authen_action_ibfk_1` FOREIGN KEY (`dataset_id`) REFERENCES `dataset` (`dataset_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  ADD CONSTRAINT `authen_action_ibfk_2` FOREIGN KEY (`key_value`) REFERENCES `captcha_key` (`key_value`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+  ADD CONSTRAINT `authen_action_ibfk_1` FOREIGN KEY (`dataset_id`) REFERENCES `dataset` (`dataset_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `authen_action_ibfk_2` FOREIGN KEY (`key_value`) REFERENCES `captcha_key` (`key_value`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `captcha_key`
