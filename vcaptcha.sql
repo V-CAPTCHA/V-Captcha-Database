@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Feb 17, 2022 at 06:57 AM
+-- Generation Time: Feb 17, 2022 at 11:42 AM
 -- Server version: 8.0.26
 -- PHP Version: 7.4.20
 
@@ -20,6 +20,21 @@ SET time_zone = "+00:00";
 --
 -- Database: `vcaptcha`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin`
+--
+
+CREATE TABLE `admin` (
+  `admin_id` int NOT NULL COMMENT 'รหัสประจำตัวผู้ดูแลระบบ',
+  `email` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'อีเมลล์ผู้ดูแลระบบ',
+  `password` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'รหัสผ่านผู้ดูแลระบบ',
+  `first_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'ชื่อผู้ดูแลระบบ',
+  `last_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'นามสกุลผู้ดูแลระบบ',
+  `role` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'admin' COMMENT 'ตำแหน่งผู้ดูแลระบบ'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci COMMENT='ผู้ดูแลระบบ';
 
 -- --------------------------------------------------------
 
@@ -70,6 +85,18 @@ CREATE TABLE `dataset` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `dataset_creator`
+--
+
+CREATE TABLE `dataset_creator` (
+  `creator_id` int NOT NULL COMMENT 'รหัสประจำตัวของการสร้างคีย์คำถาม',
+  `dataset_id` int NOT NULL COMMENT 'รหัสประจำตัวของคำถาม',
+  `admin_id` int NOT NULL COMMENT 'รหัสประจำตัวของผู้ดูแลระบบ'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user`
 --
 
@@ -84,6 +111,12 @@ CREATE TABLE `user` (
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`admin_id`);
 
 --
 -- Indexes for table `authen_action`
@@ -109,6 +142,14 @@ ALTER TABLE `dataset`
   ADD PRIMARY KEY (`dataset_id`);
 
 --
+-- Indexes for table `dataset_creator`
+--
+ALTER TABLE `dataset_creator`
+  ADD PRIMARY KEY (`creator_id`) USING BTREE COMMENT 'ข้อมูลการสร้างคำถาม',
+  ADD KEY `admin_id` (`admin_id`),
+  ADD KEY `dataset_id` (`dataset_id`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
@@ -117,6 +158,12 @@ ALTER TABLE `user`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `admin`
+--
+ALTER TABLE `admin`
+  MODIFY `admin_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสประจำตัวผู้ดูแลระบบ';
 
 --
 -- AUTO_INCREMENT for table `authen_action`
@@ -135,6 +182,12 @@ ALTER TABLE `captcha_key`
 --
 ALTER TABLE `dataset`
   MODIFY `dataset_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสข้อมูล dataset ที่ใช้ในการยืนยันตัวตน';
+
+--
+-- AUTO_INCREMENT for table `dataset_creator`
+--
+ALTER TABLE `dataset_creator`
+  MODIFY `creator_id` int NOT NULL AUTO_INCREMENT COMMENT 'รหัสประจำตัวของการสร้างคีย์คำถาม';
 
 --
 -- AUTO_INCREMENT for table `user`
@@ -158,6 +211,13 @@ ALTER TABLE `authen_action`
 --
 ALTER TABLE `captcha_key`
   ADD CONSTRAINT `captcha_key_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+--
+-- Constraints for table `dataset_creator`
+--
+ALTER TABLE `dataset_creator`
+  ADD CONSTRAINT `dataset_creator_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `admin` (`admin_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `dataset_creator_ibfk_2` FOREIGN KEY (`dataset_id`) REFERENCES `dataset` (`dataset_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
