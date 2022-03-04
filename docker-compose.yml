@@ -12,6 +12,7 @@ services:
       MYSQL_ROOT_HOST: '%'
       TZ: Asia/Bangkok
     command: --default-authentication-plugin=mysql_native_password
+    restart: always
       
   phpmyadmin: #phpmyadmin
     image: phpmyadmin/phpmyadmin
@@ -19,6 +20,7 @@ services:
       - ${PMA_PORT}:80
     environment:
       PMA_HOSTS: mysql
+    restart: always
 
   web: #WEB Server for img store
     image: nginx
@@ -29,3 +31,4 @@ services:
     environment:
     - NGINX_HOST=${IMG_STORE_SITE} // CNAME define
     - NGINX_PORT=80
+    restart: always
